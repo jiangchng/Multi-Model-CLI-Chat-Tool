@@ -2,13 +2,12 @@
 
 命令行 AI 聊天工具 —— 支持多轮对话、流式输出、多模型切换、对话持久化。
 
-基于 DeepSeek API（OpenAI 兼容格式），纯 Python 实现，适合新手学习 LLM 应用开发。
 
 ## 功能
 
 - **多轮对话** — 保持上下文，AI 记住之前说了什么
 - **流式输出** — 逐字打印，即时反馈（SSE 协议）
-- **多模型切换** — DeepSeek V3（快速）/ R1（深度推理）/ OpenAI 兼容
+- **多模型切换** — DeepSeek 
 - **System Prompt** — 自定义 AI 人设
 - **对话持久化** — 保存为 JSON，随时加载继续
 - **网络容错** — 指数退避自动重试
@@ -28,36 +27,11 @@ ChatApp（控制层：命令路由 + 主循环）
 ## 环境要求
 
 - Python ≥ 3.9
-- DeepSeek API Key（[免费注册](https://platform.deepseek.com)，新用户送 500 万 token）
-
-## 安装
-
-```bash
-# 1. 进入项目目录
-cd deepseek-chat
-
-# 2. 创建虚拟环境（Python 3.9+）
-python -m venv .venv
-
-# 3. 激活虚拟环境
-#    Windows:
-.venv\Scripts\activate
-#    macOS / Linux:
-source .venv/bin/activate
-
-# 4. 安装依赖
-pip install httpx pydantic pydantic-settings
-```
+- httpx pydantic pydantic-settings
 
 ## 配置
 
 在项目根目录创建 `.env` 文件：
-
-```ini
-DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-```
-
-获取 Key：登录 [platform.deepseek.com](https://platform.deepseek.com) → API Keys → 创建。
 
 ## 运行
 
@@ -92,13 +66,6 @@ AI: 闭包是一个函数捕获并记住了其外部作用域的变量，
 | `/history` | 查看消息列表 | |
 | `/exit` | 退出程序 | |
 
-### 可用模型
-
-| 模型名 | 说明 |
-|--------|------|
-| `deepseek-chat` | DeepSeek V3，快速对话，适合日常使用 |
-| `deepseek-reasoner` | DeepSeek R1，深度推理，可见思维链 |
-| `gpt-4o` | OpenAI GPT-4o（需自行配置 OpenAI API Key） |
 
 ## 项目结构
 
@@ -170,29 +137,6 @@ data: [DONE]
 
 为避免上下文过长，`Conversation.get_context()` 默认只取最近 20 条消息。
 
-## 常见问题
-
-**Q: 运行报 `ModuleNotFoundError`？**
-
-```bash
-pip install httpx pydantic pydantic-settings
-```
-
-**Q: 报 `401 Unauthorized`？**
-
-检查 `.env` 文件是否在项目根目录，格式是否正确（没有引号、没有空格）：
-```
-DEEPSEEK_API_KEY=sk-xxx
-```
-
-**Q: 流式输出卡住不动？**
-
-网络问题。等 30 秒看是否自动恢复，或 Ctrl+C 重试。
-
-**Q: 对话越来越慢？**
-
-消息历史太长了。用 `/clear` 清空，或减小 `Conversation.py` 中 `get_context(max_messages=20)` 的值。
-
 ## 技术栈
 
 | 组件 | 用途 |
@@ -203,17 +147,3 @@ DEEPSEEK_API_KEY=sk-xxx
 | `asyncio` | 异步 IO |
 | `json` | SSE 数据解析 |
 
-## 学习路径
-
-本项目是「AI 应用开发学习路线」第一阶段的项目。完整路线：
-
-1. ✅ **第一阶段** — Python 速成 + CLI 聊天工具（本项目）
-2. **第二阶段** — Prompt Engineering + Function Calling + 结构化输出
-3. **第三阶段** — RAG 检索增强生成（知识库问答）
-4. **第四阶段** — AI Agent 开发
-5. **第五阶段** — 工程化与生产部署
-6. **第六阶段** — 前端与全栈
-
-## License
-
-MIT

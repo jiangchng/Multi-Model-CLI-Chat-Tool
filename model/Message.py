@@ -1,26 +1,27 @@
-from datetime import datetime
-
-from pydantic import Field
-
-from pydantic import BaseModel
-
 """
-       一次聊天消息。
-       发送方和内容
-       role 的取值（OpenAI/DeepSeek 标准）：
-         - "system"    : 系统指令，定义 AI 的行为
-         - "user"      : 用户说的话
-         - "assistant" : AI 的回复
-       """
-class Message(BaseModel):
+消息和对话的数据模型 —— 项目的"领域层"。
 
-    # 角色
+Message  → 单条聊天消息（谁说的、说了什么、什么时候说的）
+Conversation → 一次完整对话（消息列表 + System Prompt + 模型名）
+"""
+
+from datetime import datetime
+from pydantic import BaseModel, Field
+
+
+class Message(BaseModel):
+    """单条聊天消息。
+
+    对应 OpenAI/DeepSeek API 中 messages 数组的一项。
+
+    role 的取值（OpenAI 标准）：
+        - "system"    : 系统指令，定义 AI 的行为边界
+        - "user"      : 用户说的话
+        - "assistant" : AI 的回复
+    """
+
     role: str
-    # 内容
     content: str
-    # 对话时间
     timestamp: datetime = Field(default_factory=datetime.now)
-    # default_factory=datetime.now 而不是 default=datetime.now
-    # 区别：
-    #   default=datetime.now     → 所有 Message 共用一个时间（定义时求值一次）
-    #   default_factory=datetime.now → 每条 Message 创建时重新求值 ✅
+    # default_factory=datetime.now  → 每条消息创建时重新求值
+    # default=datetime.now          → 所有消息共用一个时间（定义时求值一次）❌
